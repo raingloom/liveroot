@@ -110,3 +110,11 @@ rsync -ax --delete --no-whole-file --inplace $PWD/ /run/oroot \
   --exclude boot --exclude dev \
   --exclude mnt --exclude proc --exclude run \
   --exclude sys --exclude tmp --exclude usr/bin/overlay_flush;
+
+
+if [ "$oroot_settings_btrfs" = 'true' ]; then
+  btrfs subvolume snapshot -r "/run/oroot" "/run/oroot/snapshots/\$(date +%s)"
+  if [ "$oroot" = "live" ]; then
+     btrfs subvolume delete /oroot-snap
+  fi
+fi

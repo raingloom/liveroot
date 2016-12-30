@@ -1,13 +1,6 @@
 #!/bin/bash
 
-if [ "$1" = "btrfs" ]; then
-   cat <<EOF >> oroot
-           btrfs subvolume snapshot -r \"/run/oroot\" \"/run/oroot/snapshots/\\\$(date +%s)\"
-           if [ \"\$oroot\" = \"live\" ]; then
-              btrfs subvolume delete /oroot-snap
-           fi
-EOF
-fi
+
 
 # unmount and remove drive
 cat <<EOF >> oroot
