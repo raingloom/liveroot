@@ -31,20 +31,20 @@ run_hook() {
 	  crypt_root="${a#cryptdevice=UUID=}"
 	  cat <<EOF
 	     if [ \"\$oroot\" = \"live\" ]; then
-		cryptsetup open \"/dev/disk/by-uuid/${crypt_root%:*}\" \"${crypt_root#*:}\" \\
+		cryptsetup open \"/dev/disk/by-uuid/${crypt_root%:*}\" \"${crypt_root#*:}\" \
 EOF
 	  ;;
 	cryptdevice)
 	  crypt_root="${a#cryptdevice=}"
 	  cat <<EOF
 	     if [ \"\$oroot\" = \"live\" ]; then
-		cryptsetup open \"${crypt_root%:*}\" \"${crypt_root#*:}\" \\
+		cryptsetup open \"${crypt_root%:*}\" \"${crypt_root#*:}\" \
 EOF
 	  ;;
 	cryptkey*UUID)
 	  cryptkey_root="${a#cryptkey=UUID=}"
 	  cat <<EOF
-		  --key-file \\\$(mkdir \"/run/oroot-key\"; mount -U \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
+		  --key-file \\$(mkdir \"/run/oroot-key\"; mount -U \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
 	   fi
 EOF
 	  unset cryptkey_root
@@ -52,7 +52,7 @@ EOF
 	cryptkey*)
 	  cryptkey_root="${a#cryptkey=}"
 	  cat <<EOF
-		  --key-file \\\$(mkdir \"/run/oroot-key\"; mount \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
+		  --key-file \\$(mkdir \"/run/oroot-key\"; mount \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
 EOF
 	  unset cryptkey_root
 	  ;;
@@ -62,11 +62,11 @@ EOF
         cat <<EOF
         
            fi
-           mount -U \"${a#root=UUID=}\" \\
+           mount -U \"${a#root=UUID=}\" \
 EOF
           else
         cat <<EOF
-           mount -U \"${a#root=UUID=}\" \\
+           mount -U \"${a#root=UUID=}\" \
 EOF
         fi
         ;;
@@ -75,11 +75,11 @@ EOF
         cat <<EOF
         
            fi
-           mount --source \"${a#root=}\" \\
+           mount --source \"${a#root=}\" \
 EOF
          else
         cat <<EOF
-           mount --source \"${a#root=}\" \\
+           mount --source \"${a#root=}\" \
 EOF
         fi
         ;;
@@ -105,3 +105,8 @@ if [ "$oroot_settings_btrfs" = 'true' ]; then
    cd /
 fi
 
+
+rsync -ax --delete --no-whole-file --inplace \$PWD/ /run/oroot \
+  --exclude boot --exclude dev \
+  --exclude mnt --exclude proc --exclude run \
+  --exclude sys --exclude tmp --exclude usr/bin/overlay_flush;
