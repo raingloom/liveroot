@@ -77,3 +77,6 @@ EOF
 
 # interpret kernel cmdline options and pass to above loop
 $(genOverlayFlush)
+
+#mount root with options parsed from fstab
+mount -o $(awk '{if ($2 == "/") {print $4}}' /etc/fstab) "/run/oroot"

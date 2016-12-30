@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# use mount options
-cat <<EOF >> oroot
-             mount -o $(awk '{if ($2 == "/") {print $4}}' /etc/fstab) \"/run/oroot\"
-EOF
-
 if [ "$1" = "btrfs" ]; then
    cat <<EOF >> oroot
            if [ \"\$oroot\" = \"live\" ]; then
