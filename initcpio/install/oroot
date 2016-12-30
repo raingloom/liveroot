@@ -6,13 +6,14 @@
 IFS='='
 while read -r k v
 do
-  export "oroot_settings_${k}='${v}'"
+  export "oroot_settings_${k}=${v}"
 done </etc/oroot.conf
 IFS=
 
 build() {
   add_dir /lroot
   add_dir /troot
+  add_file /etc/oroot.config
   add_binary zramctl
   add_binary mkswap
   add_binary swapon
