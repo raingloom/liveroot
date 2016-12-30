@@ -80,3 +80,16 @@ $(genOverlayFlush)
 
 #mount root with options parsed from fstab
 mount -o $(awk '{if ($2 == "/") {print $4}}' /etc/fstab) "/run/oroot"
+
+
+if [ "$oroot_settings_btrfs" = 'true' ]; then
+   if [ "$oroot" = "live" ]; then
+      btrfs subvolume snapshot / /oroot-snap
+      cd /oroot-snap
+    else
+      cd /
+   fi
+ else
+   cd /
+fi
+
