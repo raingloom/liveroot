@@ -12,27 +12,26 @@ run_hook() {
 
   # generate part of the overlay_flush script
   genOverlayFlush() {
-    read b
     # sort the kernel cmdline parameters alphabetically
-    for a in $(sort <(for c in $b; do echo $c; done)); do
+    for a in $(sort <(for c in $(cat /proc/cmdline); do echo $c; done)); do
       case "$a" in
 	cryptdevice*UUID*)
 	  crypt_root="${a#cryptdevice=UUID=}"
-	  cat <<EOF >> oroot
+	  cat <<EOF
 	     if [ \"\$oroot\" = \"live\" ]; then
 		cryptsetup open \"/dev/disk/by-uuid/${crypt_root%:*}\" \"${crypt_root#*:}\" \\
 EOF
 	  ;;
 	cryptdevice)
 	  crypt_root="${a#cryptdevice=}"
-	  cat <<EOF >> oroot
+	  cat <<EOF
 	     if [ \"\$oroot\" = \"live\" ]; then
 		cryptsetup open \"${crypt_root%:*}\" \"${crypt_root#*:}\" \\
 EOF
 	  ;;
 	cryptkey*UUID)
 	  cryptkey_root="${a#cryptkey=UUID=}"
-	  cat <<EOF >> oroot
+	  cat <<EOF
 		  --key-file \\\$(mkdir \"/run/oroot-key\"; mount -U \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
 	   fi
 EOF
@@ -40,7 +39,7 @@ EOF
 	  ;;
 	cryptkey*)
 	  cryptkey_root="${a#cryptkey=}"
-	  cat <<EOF >> oroot
+	  cat <<EOF
 		  --key-file \\\$(mkdir \"/run/oroot-key\"; mount \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
 EOF
 	  unset cryptkey_root
@@ -48,34 +47,33 @@ EOF
 	root*UUID*)
 	  # need to newline before fi for cryptsetup to break \
         if [ "$crypt_root" ]; then
-        cat <<EOF >> oroot
+        cat <<EOF
         
            fi
            mount -U \"${a#root=UUID=}\" \\
 EOF
           else
-        cat <<EOF >> oroot
+        cat <<EOF
            mount -U \"${a#root=UUID=}\" \\
 EOF
         fi
         ;;
       root*)
         if [ "$crypt_root" ]; then
-        cat <<EOF >> oroot
+        cat <<EOF
         
            fi
            mount --source \"${a#root=}\" \\
 EOF
          else
-        cat <<EOF >> oroot        
+        cat <<EOF
            mount --source \"${a#root=}\" \\
 EOF
         fi
         ;;
     esac
   done
-  unset b
 }
 
 # interpret kernel cmdline options and pass to above loop
-genOverlayFlush </proc/cmdline
+$(genOverlayFlush)
