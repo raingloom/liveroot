@@ -106,7 +106,7 @@ if [ "$oroot_settings_btrfs" = 'true' ]; then
 fi
 
 
-rsync -ax --delete --no-whole-file --inplace \$PWD/ /run/oroot \
+rsync -ax --delete --no-whole-file --inplace $PWD/ /run/oroot \
   --exclude boot --exclude dev \
   --exclude mnt --exclude proc --exclude run \
   --exclude sys --exclude tmp --exclude usr/bin/overlay_flush;
