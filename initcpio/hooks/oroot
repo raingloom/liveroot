@@ -1,5 +1,17 @@
 #!/bin/ash
+#vim: set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+
 run_hook() {
+  #reads a config file line by line
+  #config format is 'key=value' repeated on any number of lines
+  IFS='='
+  while read -r k v
+  do
+    export "oroot_settings_${k}=${v}"
+  done </etc/oroot.conf
+  IFS=
+
+  
   if [ "\${oroot}" ]; then
      fsck_root() {
        echo &>/dev/null
