@@ -33,14 +33,14 @@ run_hook() {
 	     if [ \"\$oroot\" = \"live\" ]; then
 		cryptsetup open \"/dev/disk/by-uuid/${crypt_root%:*}\" \"${crypt_root#*:}\" \
 EOF
-	  ;;
+	;;
 	cryptdevice)
 	  crypt_root="${a#cryptdevice=}"
 	  cat <<EOF
 	     if [ \"\$oroot\" = \"live\" ]; then
 		cryptsetup open \"${crypt_root%:*}\" \"${crypt_root#*:}\" \
 EOF
-	  ;;
+	;;
 	cryptkey*UUID)
 	  cryptkey_root="${a#cryptkey=UUID=}"
 	  cat <<EOF
@@ -48,14 +48,14 @@ EOF
 	   fi
 EOF
 	  unset cryptkey_root
-	  ;;
+	;;
 	cryptkey*)
 	  cryptkey_root="${a#cryptkey=}"
 	  cat <<EOF
 		  --key-file \\$(mkdir \"/run/oroot-key\"; mount \"${cryptkey_root%%:*}\" \"/run/oroot-key\"; echo \"/run/oroot${cryptkey_root##*:}\")
 EOF
 	  unset cryptkey_root
-	  ;;
+	;;
 	root*UUID*)
 	  # need to newline before fi for cryptsetup to break \
         if [ "$crypt_root" ]; then
@@ -69,7 +69,7 @@ EOF
            mount -U \"${a#root=UUID=}\" \
 EOF
         fi
-        ;;
+      ;;
       root*)
         if [ "$crypt_root" ]; then
         cat <<EOF
@@ -82,7 +82,7 @@ EOF
            mount --source \"${a#root=}\" \
 EOF
         fi
-        ;;
+      ;;
     esac
   done
 }
