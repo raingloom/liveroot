@@ -1,19 +1,5 @@
 #!/bin/bash
 
-if [ "$1" = "btrfs" ]; then
-   cat <<EOF >> oroot
-           if [ \"\$oroot\" = \"live\" ]; then
-              btrfs subvolume snapshot / /oroot-snap
-              cd /oroot-snap
-            else
-              cd /
-           fi
-EOF
- else
-   cat <<EOF >> oroot
-           cd /
-EOF
-fi
 
 # rsync code
 cat <<EOF >> oroot
