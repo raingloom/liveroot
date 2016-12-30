@@ -1,14 +1,5 @@
 #!/bin/bash
 
-
-# rsync code
-cat <<EOF >> oroot
-           rsync -ax --delete --no-whole-file --inplace \\\$PWD/ /run/oroot \\
-             --exclude boot --exclude dev \\
-             --exclude mnt --exclude proc --exclude run \\
-             --exclude sys --exclude tmp --exclude usr/bin/overlay_flush;
-EOF
-
 if [ "$1" = "btrfs" ]; then
    cat <<EOF >> oroot
            btrfs subvolume snapshot -r \"/run/oroot\" \"/run/oroot/snapshots/\\\$(date +%s)\"
